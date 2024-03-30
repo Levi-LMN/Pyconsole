@@ -3,310 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notepad</title>
-     <style>
+    <title>File Upload</title>
+    <style>
         body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
             margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
         }
-
-        #notepad-container {
-            width: 90%;
-            max-width: 600px;
+        .container {
+            max-width: 90%; /* Adjusted max-width for responsiveness */
+            margin: 20px auto;
             padding: 20px;
             background-color: #fff;
+            border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            text-align: left;
-            position: relative;
-            transition: box-shadow 0.3s;
         }
-
-        #notepad-container:hover {
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-        }
-
-        h2 {
+        h1, h2 {
+            text-align: center;
             margin-bottom: 20px;
-            color: #333;
-            font-size: 1.5em;
+            color: #007bff;
         }
-
-        #notes {
-            width: 100%;
-            height: 200px;
-            padding: 10px;
-            box-sizing: border-box;
-            margin-bottom: 15px;
-            resize: none;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            line-height: 1.5;
-            background-color: #f9f9f9;
+        form {
+            text-align: center;
+            margin-top: 20px;
         }
-
-        #clear-btn {
+        .custom-file-upload {
+            display: inline-block;
             padding: 10px 20px;
-            background-color: #4CAF50;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #007bff;
             color: #fff;
+            transition: background-color 0.3s;
+        }
+        .custom-file-upload:hover {
+            background-color: #0056b3;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        input[type="submit"] {
+            background-color: #28a745;
+            color: #fff;
+            padding: 12px 24px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
-        #clear-btn:hover {
-            background-color: #45a049;
+        input[type="submit"]:hover {
+            background-color: #218838;
         }
-
-        /* Notepad background image */
-        #notepad-container:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://marketplace.canva.com/EAFt3x9k83E/1/0/1135w/canva-white-black-minimalist-professional-notepad-cnmXruQsK3U.jpg') repeat;
-            opacity: 0.1;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        a {
-            color: #3498db;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    </style> <style>
-        body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #f5f5f5;
+        ul {
+            list-style-type: none;
+            padding: 0;
             margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            text-align: center;
         }
-
-        #notepad-container {
-            width: 90%;
-            max-width: 600px;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            text-align: left;
-            position: relative;
-            transition: box-shadow 0.3s;
+        li {
+            margin-bottom: 10px;
         }
-
-        #notepad-container:hover {
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            color: #333;
-            font-size: 1.5em;
-        }
-
-        #notes {
-            width: 100%;
-            height: 200px;
-            padding: 10px;
-            box-sizing: border-box;
-            margin-bottom: 15px;
-            resize: none;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            line-height: 1.5;
-            background-color: #f9f9f9;
-        }
-
-        #clear-btn {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #clear-btn:hover {
-            background-color: #45a049;
-        }
-
-        /* Notepad background image */
-        #notepad-container:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://marketplace.canva.com/EAFt3x9k83E/1/0/1135w/canva-white-black-minimalist-professional-notepad-cnmXruQsK3U.jpg') repeat;
-            opacity: 0.1;
-            pointer-events: none;
-            z-index: -1;
-        }
-
         a {
-            color: #3498db;
             text-decoration: none;
+            color: #007bff;
+            margin-left: 10px;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #0056b3;
         }
 
-        a:hover {
-            text-decoration: underline;
+        /* Responsive Styles */
+        @media only screen and (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            h1, h2 {
+                font-size: 24px;
+            }
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
-    <script>
-    $(document).ready(function () {
-        // Check if the user is logged in
-        var isLoggedIn = sessionStorage.getItem('logged_in');
-        if (!isLoggedIn) {
-            // Redirect to logout URL
-            window.location.href = "{{ url_for('logout') }}";
-        }
-
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
-
-        // Function to update notes on the server
-        function updateNotes() {
-            var userNotes = $("#notes").val();
-            socket.emit('update_notes_request', { 'notes': userNotes });
-        }
-
-        // Update notes when the textarea content changes
-        $("#notes").on("input", function () {
-            updateNotes();
-        });
-
-        // Intercept Enter key press
-        $("#notes").on("keydown", function (e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                var cursorPos = this.selectionStart;
-                var textBefore = $(this).val().substring(0, cursorPos);
-                var textAfter = $(this).val().substring(cursorPos);
-
-                // Add '//' at the beginning of the new line
-                $(this).val(textBefore + '\n//' + textAfter);
-
-                // Move the cursor to the right position
-                var newCursorPos = cursorPos + 3;
-                this.setSelectionRange(newCursorPos, newCursorPos);
-
-                // Update notes on the server
-                updateNotes();
-            }
-        });
-
-        // Listen for notes update from the server
-        socket.on('update_notes', function (data) {
-            $("#notes").val(data.notes);
-        });
-
-        // Clear notes button
-        $("#clear-btn").on("click", function () {
-            $("#notes").val("");
-            updateNotes();
-        });
-
-        // Intercept page refresh
-        $(window).on('beforeunload', function() {
-            // Set logged out flag in sessionStorage
-            sessionStorage.setItem('logged_out', 'true');
-        });
-
-        // Set flag to indicate user is logged in
-        sessionStorage.setItem('logged_in', 'true');
-    });
-</script>
-
-    <link href="">
 </head>
 <body>
-    <div id="notepad-container">
-    <h2>Notepad</h2>
-    <p>Welcome, {{ logged_in_user }}!</p>
-    <p>You logged in <span id="time-since-login"></span> ago.</p>
-    <textarea id="notes" name="notes" placeholder="Enter your notes..."></textarea>
-    <br>
-    <button id="clear-btn">Clear Notes</button>
-    <br>
-    <a href="{{ url_for('logout') }}">Logout</a>
+    <div class="container">
+        <h1>File Upload</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="file-upload" class="custom-file-upload">
+                Choose File
+            </label>
+            <input id="file-upload" type="file" name="files[]" multiple onchange="displaySelectedFiles(this)">
+            <br><br>
+            <div id="selected-files"></div>
+            <br>
+            <input type="submit" value="Upload">
+        </form>
+        <h2>Existing Files</h2>
+        <ul>
+            {% for file in files %}
+                <li>
+                    {{ file }}
+                    <a href="{{ url_for('download_file', filename=file) }}" download>Download</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <form action="/clear_files" method="post">
+            <input type="submit" value="Clear All Files">
+        </form>
+    </div>
 
-    <p>Active Users:</p>
-    <ul id="active-users-list">
-        {% for user in active_users %}
-            <li>{{ user }}</li>
-        {% endfor %}
-    </ul>
-</div>
-
-
-<script>
-        // Function to get the login time from local storage
-        function getLoginTime() {
-            var loginTime = localStorage.getItem('login_time');
-            return loginTime ? new Date(loginTime) : null;
+    <script>
+        function displaySelectedFiles(input) {
+            const selectedFiles = input.files;
+            const selectedFilesDiv = document.getElementById('selected-files');
+            selectedFilesDiv.innerHTML = '';
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const fileName = selectedFiles[i].name;
+                selectedFilesDiv.innerHTML += `<p>${fileName}</p>`;
+            }
         }
-
-        // Function to set the login time in local storage
-        function setLoginTime(loginTime) {
-            localStorage.setItem('login_time', loginTime);
-        }
-
-        // Calculate and display time since login
-        function updateTimeSinceLogin() {
-            var loginTime = getLoginTime();
-            if (!loginTime) return;
-
-            var currentTime = new Date();
-            var elapsedTime = currentTime - loginTime;
-
-            var seconds = Math.floor((elapsedTime / 1000) % 60);
-            var minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
-            var hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
-            var days = Math.floor(elapsedTime / (1000 * 60 * 60 * 24));
-
-            var timeSinceLogin = '';
-            if (days > 0) timeSinceLogin += days + ' days, ';
-            if (hours > 0) timeSinceLogin += hours + ' hours, ';
-            if (minutes > 0) timeSinceLogin += minutes + ' minutes, ';
-            timeSinceLogin += seconds + ' seconds';
-
-            document.getElementById('time-since-login').textContent = timeSinceLogin;
-        }
-
-        // Update time since login every second
-        setInterval(updateTimeSinceLogin, 1000);
-
-        // Initial update
-        updateTimeSinceLogin();
-
-        // Set login time in local storage when the page loads
-        window.onload = function() {
-            setLoginTime(new Date());
-        };
-
-
     </script>
-
-
 </body>
 </html>
