@@ -1,91 +1,43 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from flask_socketio import SocketIO, emit
-from datetime import datetime
+from flask import Flask, render_template, request, redirect, url_for
+import os
+from flask import send_from_directory
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
 
-# Dictionary to store user data (email and associated name)
-users = {
-    'levi@gmail.com': 'Levi',
-    'eve@gmail.com': 'Eve'
-}
+UPLOAD_FOLDER = '/home/Levimukuha/Pyconsole/uploads'
 
-# List to store active users
-active_users = []
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+def allowed_file(filename):
+    return True
 
 @app.route('/')
 def index():
-    if 'user' not in session:
-        return redirect(url_for('login'))
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    return render_template('index.html', files=files)
 
-    user_email = session['user']
-    user_name = users.get(user_email, user_email.split('@')[0])  # Use email as name if not found
-    return render_template('index.html', notes=session['notes'], logged_in_user=user_name, active_users=active_users)
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        if email in users:
-            session['user'] = email
-            session['login_time'] = datetime.now()  # Store login time in session
-            session['notes'] = ""
-            active_users.append(email)
-            return redirect(url_for('index'))
-        else:
-            error_message = 'Invalid email. Please try again.'
-
-    return render_template('login.html', error_message=error_message if 'error_message' in locals() else None)
-
-
-@app.route('/logout')
-def logout():
-    email = session.pop('user', None)
-    session.pop('login_time', None)  # Remove login time from session on logout
-    session.pop('notes', None)
-    if email in active_users:
-        active_users.remove(email)
-    return redirect(url_for('login'))
-
-
-@app.route('/delete', methods=['POST'])
-def delete_notes():
-    session['notes'] = ""
-    emit('update_notes', {'notes': session['notes']}, broadcast=True)
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'files[]' not in request.files:
+        return redirect(request.url)
+    files = request.files.getlist('files[]')
+    for file in files:
+        if file.filename == '':
+            continue
+        if file and allowed_file(file.filename):
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
     return redirect(url_for('index'))
 
+@app.route('/download/<path:filename>')
+def download_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
-@socketio.on('update_notes_request')
-def handle_update_notes(data):
-    session['notes'] = data['notes']
-    emit('update_notes', {'notes': session['notes']}, broadcast=True)
-
-
-@socketio.on('connect')
-def handle_connect():
-    if 'user' in session:
-        email = session['user']
-        if email not in active_users:
-            active_users.append(email)
-        emit_active_users()
-
-
-@socketio.on('disconnect')
-def handle_disconnect():
-    if 'user' in session:
-        email = session['user']
-        if email in active_users:
-            active_users.remove(email)
-        emit_active_users()
-
-
-def emit_active_users():
-    socketio.emit('active_users_update', {'active_users': active_users}, broadcast=True)
-
+@app.route('/clear_files', methods=['POST'])
+def clear_files():
+    filelist = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], f))]
+    for file in filelist:
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], file))
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    app.run(debug=True)
